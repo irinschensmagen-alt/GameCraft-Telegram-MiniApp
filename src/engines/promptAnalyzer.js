@@ -74,8 +74,8 @@ function detectVocabularyPairs(text) {
   for (const part of parts) {
     const m = part.match(/^(.{1,60}?)\s*(?:=|—|–|-|:)\s*(.{1,60})$/);
     if (!m) continue;
-    const left = m[1].trim();
-    const right = m[2].trim();
+    const left = m[1].trim().replace(/[.!?]+$/g, "").trim();
+    const right = m[2].trim().replace(/[.!?]+$/g, "").trim();
     if (left && right && !/^(тема|уровень|возраст|время|класс|предмет|topic|level)$/i.test(left)) {
       pairs.push([left, right]);
     }
