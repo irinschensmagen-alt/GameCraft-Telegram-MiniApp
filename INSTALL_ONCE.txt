@@ -1,4 +1,4 @@
-GAMECRAFT AI — ФИНАЛЬНОЕ ОБНОВЛЕНИЕ С AI API
+GAMECRAFT AI — ОБНОВЛЕНИЕ: ОДИНАКОВЫЙ AI-РЕЖИМ ДЛЯ ВСЕХ
 
 Рабочая папка:
 C:\MyProjects\GameCraft-Telegram-MiniApp
@@ -7,10 +7,20 @@ GitHub-папка:
 C:\Users\HP\Documents\GitHub\GameCraft-Telegram-MiniApp
 
 1. Распакуйте всё содержимое архива в рабочую папку с заменой файлов.
-2. Ваш .env не удаляйте: его в архиве нет.
-3. В .env уже должна быть строка OPENROUTER_API_KEY=...
+2. Ваш локальный .env не удаляйте. В архиве .env нет.
+3. В .env должны остаться:
+TELEGRAM_BOT_TOKEN=...
+MINI_APP_URL=https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/
+OPENROUTER_API_KEY=...
+
 4. Скопируйте содержимое архива в GitHub-папку с заменой файлов.
-5. GitHub Desktop: Summary: Add OpenRouter AI integration → Commit to main → Push origin.
-6. Перезапустите бота: Ctrl+C, затем npm run dev.
-7. Обычный пользователь увидит: 🤖 AI API: OpenRouter.
-8. Т (ID 328761045) увидит: 🧪 Режим проверки Т: без расхода API-токенов.
+5. GitHub Desktop:
+Summary: Use OpenRouter AI for all users
+Commit to main
+Push origin
+6. Перезапустите бота:
+Ctrl+C
+npm run dev
+
+Теперь ВСЕ пользователи, включая тьютора, используют настоящий OpenRouter API.
+Лимит по умолчанию: 3 AI-запроса в сутки на пользователя.
