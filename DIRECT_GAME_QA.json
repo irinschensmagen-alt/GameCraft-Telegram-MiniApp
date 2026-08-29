@@ -1,0 +1,9 @@
+{
+  "root_index_is_game": true,
+  "root_styles_exist": true,
+  "root_app_exists": true,
+  "root_app_has_shuffle": true,
+  "root_app_has_match": true,
+  "bot_known_url_fallback": true,
+  "env_root_url": true
+}

@@ -1,0 +1,7 @@
+{
+  "root_redirects_to_miniapp": true,
+  "bot_button_label": true,
+  "bot_no_kpd_report_to_user": true,
+  "production_url_has_miniapp_path": true,
+  "memory_renderer_present": true
+}
