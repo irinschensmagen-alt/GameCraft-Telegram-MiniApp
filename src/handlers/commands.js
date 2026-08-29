@@ -17,7 +17,7 @@ die Sonne = солнце, der Regen = дождь, der Schnee = снег, der Win
 Сделай Bingo.
 
 Можно менять язык, тему, лексику и механику.
-Бот использует именно ваш учебный материал и не подставляет случайные слова.`;
+Бот использует именно ваш учебный материал и не подставляет случайные слова.\n\n🤖 При формировании ответа используется AI API OpenRouter.`;
 
 export function registerCommands(bot) {
   bot.start((ctx) => ctx.reply(`Здравствуйте! Я GameCraft AI.\n\n${USER_GUIDE}`));

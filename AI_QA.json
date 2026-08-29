@@ -1,0 +1,7 @@
+{
+  "openrouter_endpoint": true,
+  "free_router": true,
+  "tutor_id": 328761045,
+  "daily_limit_default": 3,
+  "env_excluded": true
+}
