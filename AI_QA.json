@@ -1,4 +1,7 @@
 {
   "equals_only_pair_parser": false,
-  "dash_separator_removed": true
+  "dash_separator_removed": true,
+  "robust_json_extraction": true,
+  "automatic_json_retry": true,
+  "real_ai_for_all_users": true
 }

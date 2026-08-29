@@ -1,13 +1,13 @@
 {
-  "src/engines/promptAnalyzer.js": {
-    "ok": true,
-    "message": ""
-  },
   "src/services/aiService.js": {
     "ok": true,
     "message": ""
   },
   "src/handlers/message.js": {
+    "ok": true,
+    "message": ""
+  },
+  "src/engines/promptAnalyzer.js": {
     "ok": true,
     "message": ""
   },

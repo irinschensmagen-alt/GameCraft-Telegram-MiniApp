@@ -30,12 +30,25 @@ function stripCodeFence(text = "") {
     .trim();
 }
 
-function safeJson(text) {
+function safeJson(text = "") {
+  const cleaned = stripCodeFence(text);
+
+  // 1. Ideal case: the model returned pure JSON.
   try {
-    return JSON.parse(stripCodeFence(text));
-  } catch {
-    return null;
+    return JSON.parse(cleaned);
+  } catch {}
+
+  // 2. Free models sometimes wrap JSON in an explanation.
+  // Extract the first complete-looking object.
+  const first = cleaned.indexOf("{");
+  const last = cleaned.lastIndexOf("}");
+  if (first !== -1 && last > first) {
+    try {
+      return JSON.parse(cleaned.slice(first, last + 1));
+    } catch {}
   }
+
+  return null;
 }
 
 export function getAiUsageStatus(userId) {
@@ -82,36 +95,63 @@ export async function analyzeWithAI({ userId, text, localProfile }) {
 Не добавляй новых слов или переводов.
 `;
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${key}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/",
-      "X-Title": "GameCraft AI"
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: text }
-      ],
-      temperature: 0.2,
-      max_tokens: 500
-    })
-  });
+  async function callOpenRouter(messages, maxTokens = 500) {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/",
+        "X-Title": "GameCraft AI"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages,
+        temperature: 0.1,
+        max_tokens: maxTokens
+      })
+    });
 
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`OPENROUTER_${response.status}: ${body.slice(0, 300)}`);
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`OPENROUTER_${response.status}: ${body.slice(0, 300)}`);
+    }
+
+    const data = await response.json();
+    return data?.choices?.[0]?.message?.content || "";
   }
 
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content || "";
-  const parsed = safeJson(content);
+  const originalMessages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: text }
+  ];
+
+  let content = await callOpenRouter(originalMessages);
+  let parsed = safeJson(content);
+
+  // Some free models occasionally add prose around JSON or break JSON syntax.
+  // If that happens, make one automatic repair request.
+  if (!parsed) {
+    const repairPrompt = `
+Исправь следующий ответ в валидный JSON.
+Верни ТОЛЬКО один JSON-объект, без Markdown, комментариев и пояснений.
+Сохрани смысл и только эти поля:
+subject, grade, ageGroup, level, topic, skills, requestedFamily, educationalGoal, aiNote.
+
+Ответ для исправления:
+${content}
+`;
+
+    content = await callOpenRouter([
+      { role: "system", content: "Ты исправляешь формат JSON. Отвечай только валидным JSON-объектом." },
+      { role: "user", content: repairPrompt }
+    ], 450);
+
+    parsed = safeJson(content);
+  }
 
   if (!parsed) {
-    throw new Error("OPENROUTER_BAD_JSON");
+    throw new Error("OPENROUTER_BAD_JSON_AFTER_RETRY");
   }
 
   incrementUsed(userId);
