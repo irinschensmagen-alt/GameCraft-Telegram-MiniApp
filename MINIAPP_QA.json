@@ -1,0 +1,7 @@
+{
+  "bot_has_mini_app_url": true,
+  "bot_has_webapp_button": true,
+  "memory_has_shuffle": true,
+  "memory_has_match_logic": true,
+  "memory_has_finish": true
+}
