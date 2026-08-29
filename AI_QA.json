@@ -1,7 +1,4 @@
 {
-  "real_ai_for_all_users": true,
-  "tutor_stub_removed": true,
-  "daily_limit_default": true,
-  "openrouter_free": true,
-  "no_secret_key_hardcoded": true
+  "equals_only_pair_parser": false,
+  "dash_separator_removed": true
 }

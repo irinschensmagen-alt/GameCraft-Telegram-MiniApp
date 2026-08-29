@@ -72,7 +72,7 @@ function detectVocabularyPairs(text) {
   const parts = text.split(/[\n;,]+/).map(s => s.trim()).filter(Boolean);
 
   for (const part of parts) {
-    const m = part.match(/^(.{1,60}?)\s*(?:=|—|–|-|:)\s*(.{1,60})$/);
+    const m = part.match(/^(.{1,60}?)\s*=\s*(.{1,60})$/);
     if (!m) continue;
     const left = m[1].trim().replace(/[.!?]+$/g, "").trim();
     const right = m[2].trim().replace(/[.!?]+$/g, "").trim();
