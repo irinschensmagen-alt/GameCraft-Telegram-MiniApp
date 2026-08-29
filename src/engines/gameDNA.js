@@ -12,6 +12,7 @@ export function createGameDNA(profile, recommendation) {
     skills: profile.skills?.length ? profile.skills : ["knowledge"],
     duration: profile.duration || 20,
     gameLanguage: profile.gameLanguage || "ru",
+    vocabularyPairs: profile.vocabularyPairs || [],
     educationalGoal: `Отработать: ${(profile.skills?.length ? profile.skills : ["knowledge"]).join(", ")}`,
     progression: "5 содержательных игровых этапов",
     reward: "прогресс, открытие следующего этапа и содержательная обратная связь",

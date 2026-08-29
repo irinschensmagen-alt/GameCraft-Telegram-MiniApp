@@ -66,6 +66,23 @@ function detectTopic(text) {
   return null;
 }
 
+
+function detectVocabularyPairs(text) {
+  const pairs = [];
+  const parts = text.split(/[\n;,]+/).map(s => s.trim()).filter(Boolean);
+
+  for (const part of parts) {
+    const m = part.match(/^(.{1,60}?)\s*(?:=|—|–|-|:)\s*(.{1,60})$/);
+    if (!m) continue;
+    const left = m[1].trim();
+    const right = m[2].trim();
+    if (left && right && !/^(тема|уровень|возраст|время|класс|предмет|topic|level)$/i.test(left)) {
+      pairs.push([left, right]);
+    }
+  }
+  return pairs.slice(0, 24);
+}
+
 function detectGameLanguage(text, subject) {
   const low = text.toLowerCase();
   if (/(на немецк|deutsch)/.test(low) || subject === "Немецкий язык") return "de";
@@ -89,6 +106,7 @@ export function analyzePrompt(text) {
     topic: detectTopic(text),
     skills: [...new Set(skills)],
     duration: detectDuration(text),
-    gameLanguage: detectGameLanguage(text, subject)
+    gameLanguage: detectGameLanguage(text, subject),
+    vocabularyPairs: detectVocabularyPairs(text)
   };
 }

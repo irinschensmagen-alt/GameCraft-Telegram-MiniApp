@@ -1,25 +1,13 @@
-# GameCraft AI — Telegram Mini App
+# GameCraft AI — User Vocabulary
 
-В этой версии GitHub Pages открывает ИГРУ сразу по корневому адресу:
+Memory больше не привязана к Essen. Пользователь передаёт пары в сообщении боту.
 
-https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/
+Пример:
+`Немецкий A1, тема Kleidung. die Jacke = куртка, der Rock = юбка, die Hose = брюки, das Kleid = платье, der Pullover = свитер, die Schuhe = обувь. Сделай Memory.`
 
-То есть больше нет перехода через README и нет зависимости от `/miniapp/`.
+Если пары не указаны, случайная лексика не подставляется.
 
-## После распаковки
 
-1. В `.env` замените только `PASTE_YOUR_NEW_TOKEN_HERE` на ваш новый токен.
-2. Загрузите ВСЕ файлы из этой папки в корень репозитория `GameCraft-Telegram-MiniApp`, заменив старые.
-3. Дождитесь публикации GitHub Pages.
-4. Проверьте в обычном браузере:
-   https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/
-   — должна сразу открыться Memory-игра.
-5. В VS Code:
-   npm install
-   npm run dev
-6. В Telegram выберите Memory → ▶ Играть.
+## Инструкция в боте
 
-## Важно
-
-Корневые файлы `index.html`, `styles.css`, `app.js` — это сама игра.
-README больше не является стартовой страницей.
+Команды `/start`, `/help` и `/new` теперь показывают короткую пользовательскую инструкцию с примером ввода собственной лексики.
