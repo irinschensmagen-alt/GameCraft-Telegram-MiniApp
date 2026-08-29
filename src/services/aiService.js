@@ -126,32 +126,55 @@ export async function analyzeWithAI({ userId, text, localProfile }) {
     { role: "user", content: text }
   ];
 
-  let content = await callOpenRouter(originalMessages);
-  let parsed = safeJson(content);
+  let parsed = null;
+  let lastContent = "";
+  let lastError = null;
 
-  // Some free models occasionally add prose around JSON or break JSON syntax.
-  // If that happens, make one automatic repair request.
-  if (!parsed) {
-    const repairPrompt = `
+  // Up to 3 internal attempts for one user request.
+  // The user's daily counter is incremented only once, after a successful result.
+  for (let attempt = 1; attempt <= 3 && !parsed; attempt++) {
+    try {
+      lastContent = await callOpenRouter(originalMessages);
+      parsed = safeJson(lastContent);
+
+      // If a free model returned malformed JSON, try one format-repair request
+      // inside the same internal attempt.
+      if (!parsed && lastContent) {
+        const repairPrompt = `
 Исправь следующий ответ в валидный JSON.
 Верни ТОЛЬКО один JSON-объект, без Markdown, комментариев и пояснений.
 Сохрани смысл и только эти поля:
 subject, grade, ageGroup, level, topic, skills, requestedFamily, educationalGoal, aiNote.
 
 Ответ для исправления:
-${content}
+${lastContent}
 `;
 
-    content = await callOpenRouter([
-      { role: "system", content: "Ты исправляешь формат JSON. Отвечай только валидным JSON-объектом." },
-      { role: "user", content: repairPrompt }
-    ], 450);
+        const repairedContent = await callOpenRouter([
+          {
+            role: "system",
+            content: "Ты исправляешь формат JSON. Отвечай только валидным JSON-объектом."
+          },
+          { role: "user", content: repairPrompt }
+        ], 450);
 
-    parsed = safeJson(content);
+        parsed = safeJson(repairedContent);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (!parsed && attempt < 3) {
+      // Short pause before retrying another free-model route.
+      await new Promise(resolve => setTimeout(resolve, 700 * attempt));
+    }
   }
 
   if (!parsed) {
-    throw new Error("OPENROUTER_BAD_JSON_AFTER_RETRY");
+    if (lastError) {
+      throw new Error(`OPENROUTER_FAILED_AFTER_3_ATTEMPTS: ${lastError.message}`);
+    }
+    throw new Error("OPENROUTER_BAD_JSON_AFTER_3_ATTEMPTS");
   }
 
   incrementUsed(userId);

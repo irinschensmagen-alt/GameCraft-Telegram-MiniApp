@@ -3,5 +3,9 @@
   "dash_separator_removed": true,
   "robust_json_extraction": true,
   "automatic_json_retry": true,
-  "real_ai_for_all_users": true
+  "real_ai_for_all_users": true,
+  "three_internal_attempts": true,
+  "usage_increment_after_success_only": false,
+  "free_router": true,
+  "no_secret_key_hardcoded": true
 }
