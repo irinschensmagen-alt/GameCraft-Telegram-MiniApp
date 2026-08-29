@@ -1,0 +1,25 @@
+GAMECRAFT AI — ОДНОРАЗОВОЕ ОБНОВЛЕНИЕ
+
+1. Рабочая папка:
+C:\MyProjects\GameCraft-Telegram-MiniApp
+
+2. GitHub-папка:
+C:\Users\HP\Documents\GitHub\GameCraft-Telegram-MiniApp
+
+3. Архив распаковывать прямо в рабочую папку из пункта 1 с заменой файлов.
+Файл .env в архив НЕ включён, поэтому ваш локальный токен не затрагивается.
+
+4. После этого скопировать всё содержимое рабочей папки в GitHub-папку,
+КРОМЕ:
+- .env
+- node_modules
+- старых вложенных папок сборок
+
+5. GitHub Desktop:
+Summary: Add all GameCraft AI mechanics
+Commit to main
+Push origin
+
+6. Перезапустить бота:
+Ctrl+C
+npm run dev

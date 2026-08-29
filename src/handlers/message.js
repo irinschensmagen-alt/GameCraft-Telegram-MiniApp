@@ -12,8 +12,6 @@ function profileSummary(p) {
     `• возраст: ${p.ageGroup || "не определён"}`,
     `• уровень: ${p.level || "не указан"}`,
     `• тема: ${p.topic || "не определена"}`,
-    `• навыки: ${p.skills.length ? p.skills.join(", ") : "не определены"}`,
-    `• время: ${p.duration ? p.duration + " мин." : "не указано"}`,
     `• материал: ${p.vocabularyPairs?.length ? p.vocabularyPairs.length + " пар" : "не указан"}`
   ].join("\n");
 }
@@ -22,6 +20,7 @@ function makeMiniAppUrl(dna) {
   const base =
     process.env.MINI_APP_URL ||
     "https://irinschensmagen-alt.github.io/GameCraft-Telegram-MiniApp/";
+
   if (!/^https:\/\//i.test(base)) return null;
 
   const url = new URL(base);
@@ -34,6 +33,7 @@ function makeMiniAppUrl(dna) {
   if (Array.isArray(dna.vocabularyPairs) && dna.vocabularyPairs.length) {
     url.searchParams.set("pairs", JSON.stringify(dna.vocabularyPairs));
   }
+
   return url.toString();
 }
 
@@ -45,12 +45,16 @@ export function registerMessageHandler(bot) {
     const profile = analyzePrompt(ctx.message.text);
     setProfile(userId, profile);
 
-    const recs = recommendFamilies(profile, 4);
+    const recs = recommendFamilies(profile, 6);
     const recText = recs.map((r, i) => `${i + 1}. ${r.family.name} — ${r.score}%`).join("\n");
 
     await ctx.reply(`${profileSummary(profile)}\n\nПодходящие механики:\n${recText}`);
-    const buttons = recs.map(r => [Markup.button.callback(r.family.name, `choose:${r.family.id}`)]);
-    await ctx.reply("Выберите механику:", Markup.inlineKeyboard(buttons));
+
+    const buttons = recs.map(r => [
+      Markup.button.callback(r.family.name, `choose:${r.family.id}`)
+    ]);
+
+    await ctx.reply("Выберите игру:", Markup.inlineKeyboard(buttons));
   });
 
   bot.action(/^choose:(.+)$/, async (ctx) => {
@@ -74,14 +78,12 @@ export function registerMessageHandler(bot) {
     setProject(userId, dna);
     await ctx.answerCbQuery("Выбрано");
 
-    if (familyId !== "memory") {
-      return ctx.reply(`Вы выбрали ${chosen.family.name}. Интерактивная Mini App этого семейства пока не подключена.`);
-    }
-
     if (!dna.vocabularyPairs || dna.vocabularyPairs.length < 2) {
       return ctx.reply(
-        "Добавьте свои пары прямо в сообщение, например:\n\n" +
-        "Тема Kleidung. die Jacke = куртка, der Rock = юбка, die Hose = брюки, das Kleid = платье, der Pullover = свитер, die Schuhe = обувь. Сделай Memory."
+        "Добавьте минимум 2 пары через знак =.\n\n" +
+        "Пример:\n" +
+        "die Sonne = солнце, der Regen = дождь, der Schnee = снег, der Wind = ветер.\n" +
+        "Сделай Bingo."
       );
     }
 
@@ -89,8 +91,13 @@ export function registerMessageHandler(bot) {
     if (!miniUrl) return ctx.reply("Не настроен адрес Mini App.");
 
     await ctx.reply(
-      `🎮 ${dna.title}\nУровень: ${dna.level}\nВаш материал: ${dna.vocabularyPairs.length} пар.\n\nНажмите кнопку:`,
-      Markup.inlineKeyboard([[Markup.button.webApp("▶ Играть", miniUrl)]])
+      `🎮 ${dna.title}\n` +
+      `Механика: ${chosen.family.name}\n` +
+      `Материал: ${dna.vocabularyPairs.length} пар.\n\n` +
+      `Нажмите кнопку:`,
+      Markup.inlineKeyboard([
+        [Markup.button.webApp("▶ Играть", miniUrl)]
+      ])
     );
   });
 }

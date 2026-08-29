@@ -19,21 +19,29 @@ function scoreFamily(family, profile) {
   const low = (profile.raw || "").toLowerCase();
 
   const explicit = {
-    detective: ["детектив", "detective"],
-    escape: ["escape", "квест-комнат", "эскейп"],
-    board: ["настольн", "board game"],
-    bingo: ["бинго", "bingo"],
-    memory: ["memory", "мемори"],
+    quiz: ["quiz", "викторин", "тест"],
+    memory: ["memory", "мемори", "пары"],
     adventure: ["приключ", "adventure"],
+    escape: ["escape", "квест-комнат", "эскейп", "побег"],
+    detective: ["детектив", "detective"],
+    rpg: ["rpg", "рпг", "ролевая"],
     simulation: ["симуляц", "simulation"],
-    strategy: ["стратег", "strategy"],
+    board: ["настольн", "board game", "поле"],
+    card: ["card game", "карточная", "карточн"],
+    bingo: ["бинго", "bingo"],
+    puzzle: ["puzzle", "пазл", "головолом"],
+    sorting: ["сортиров", "sorting", "классификац"],
+    timeline: ["timeline", "хронолог", "лента времени"],
+    map: ["map game", "карта", "географ"],
     audio: ["аудио", "аудирован", "hörverstehen", "listening"],
-    speech: ["говорен", "sprechen", "speech"],
-    sorting: ["сортиров", "sorting"],
-    timeline: ["timeline", "хронолог"],
-    map: ["карта", "map game"],
-    lab: ["лаборатор", "эксперимент"],
-    quiz: ["quiz", "викторин"]
+    speech: ["говорен", "sprechen", "speech", "произнош"],
+    dragdrop: ["drag", "drop", "перетаскив"],
+    hidden: ["hidden object", "скрыт", "найди предмет"],
+    sequence: ["sequence", "последователь", "алгоритм"],
+    builder: ["builder", "конструктор", "собери"],
+    strategy: ["стратег", "strategy"],
+    social: ["social", "emotion", "эмоци", "социаль"],
+    lab: ["лаборатор", "эксперимент", "lab"]
   };
 
   if ((explicit[family.id] || []).some(k => low.includes(k))) {
