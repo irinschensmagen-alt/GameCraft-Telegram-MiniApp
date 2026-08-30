@@ -1,0 +1,8 @@
+{
+  "detective_core_loop": "find_the_false_evidence",
+  "requires_min_pairs": 3,
+  "rounds": "3-6 depending on vocabulary size",
+  "direct_translation_choice_removed": true,
+  "correct_action": "identify corrupted witness statement",
+  "learning_skill": "semantic pair discrimination and vocabulary recall"
+}

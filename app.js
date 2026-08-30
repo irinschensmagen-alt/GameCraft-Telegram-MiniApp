@@ -145,12 +145,83 @@
   }
 
   function detective(){
-    if(!requirePairs())return;const used=shuffle(pairs).slice(0,Math.min(6,pairs.length));let i=0;state.total=used.length;
-    $("subtitle").textContent="Сопоставляйте улики и доказательства.";
-    const next=()=>{if(i>=used.length)return finish(`Дело раскрыто. ${state.score} очков.`);
-      const x=used[i];task.innerHTML=`🕵️ Улика: <b>${esc(x[1])}</b>. Какое доказательство ей соответствует?`;
-      choiceGrid(sampleOptions(x[0],0),v=>{state.moves++;if(v===x[0]){state.score+=110;state.done++;good("Улика подтверждена.");i++;hud();setTimeout(next,350)}else{state.score=Math.max(0,state.score-10);bad("Эта версия не подтверждается.");hud()}})
-    };hud();next();
+    if(!requirePairs(3))return;
+
+    const used=shuffle(pairs).slice(0,Math.min(8,pairs.length));
+    const rounds=Math.min(6,Math.max(3,used.length));
+    let i=0;
+    state.total=rounds;
+
+    $("subtitle").textContent="Расследуйте дело: среди показаний есть подменённая улика.";
+
+    function buildCase(){
+      const witnesses=shuffle(used).slice(0,Math.min(3,used.length));
+      const falseIndex=Math.floor(Math.random()*witnesses.length);
+      const original=witnesses[falseIndex];
+
+      const wrongPool=used.map(x=>x[1]).filter(v=>v!==original[1]);
+      const fakeValue=shuffle(wrongPool)[0];
+
+      return {
+        witnesses:witnesses.map((x,idx)=>({
+          left:x[0],
+          right:idx===falseIndex?fakeValue:x[1],
+          actual:x[1],
+          isFalse:idx===falseIndex
+        })),
+        falseIndex
+      };
+    }
+
+    function next(){
+      if(i>=rounds){
+        return finish(`Дело раскрыто! Вы проверили ${rounds} серий показаний и набрали ${state.score} очков.`);
+      }
+
+      const c=buildCase();
+      task.innerHTML=
+        `<strong>🕵️ Досье №${i+1}</strong><br>`+
+        `Три свидетеля дали показания. Одно из них подменено.<br>`+
+        `<b>Найдите ложную улику.</b>`;
+
+      area.innerHTML='<div class="grid" id="detectiveBoard"></div>';
+      const box=$("detectiveBoard");
+
+      c.witnesses.forEach((w,idx)=>{
+        const b=document.createElement("button");
+        b.className="choice";
+        b.innerHTML=
+          `<strong>Свидетель ${idx+1}</strong><br>`+
+          `${esc(w.left)} = ${esc(w.right)}`;
+
+        b.onclick=()=>{
+          state.moves++;
+
+          if(w.isFalse){
+            state.score+=130;
+            state.done++;
+            good(`Подмена найдена! Правильно: ${w.left} = ${w.actual}`);
+            i++;
+            hud();
+            tg?.HapticFeedback?.notificationOccurred("success");
+            setTimeout(next,650);
+          }else{
+            state.score=Math.max(0,state.score-15);
+            bad("Это показание подтверждается. Ищите противоречие в другом.");
+            hud();
+            tg?.HapticFeedback?.notificationOccurred("error");
+          }
+        };
+
+        box.appendChild(b);
+      });
+
+      neutral("Сверяйте смысл каждой пары: преступник изменил только одно значение.");
+      hud();
+    }
+
+    hud();
+    next();
   }
 
   function rpg(){
