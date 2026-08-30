@@ -1,0 +1,58 @@
+{
+  "problem_prompt_pairs": [
+    [
+      "rot",
+      "красный"
+    ],
+    [
+      "blau",
+      "синий"
+    ],
+    [
+      "grün",
+      "зелёный"
+    ],
+    [
+      "gelb",
+      "жёлтый"
+    ],
+    [
+      "schwarz",
+      "чёрный"
+    ],
+    [
+      "weiß",
+      "белый"
+    ]
+  ],
+  "expected_problem_pair_count": true,
+  "newline_pairs": [
+    [
+      "die Jacke",
+      "куртка"
+    ],
+    [
+      "der Rock",
+      "юбка"
+    ],
+    [
+      "die Hose",
+      "брюки"
+    ]
+  ],
+  "semicolon_pairs": [
+    [
+      "cat",
+      "кошка"
+    ],
+    [
+      "dog",
+      "собака"
+    ],
+    [
+      "rabbit",
+      "кролик"
+    ]
+  ],
+  "syntax_ok": true
+}

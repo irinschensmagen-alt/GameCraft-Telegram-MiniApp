@@ -69,17 +69,34 @@ function detectTopic(text) {
 
 function detectVocabularyPairs(text) {
   const pairs = [];
-  const parts = text.split(/[\n;,]+/).map(s => s.trim()).filter(Boolean);
 
-  for (const part of parts) {
-    const m = part.match(/^(.{1,60}?)\s*=\s*(.{1,60})$/);
-    if (!m) continue;
-    const left = m[1].trim().replace(/[.!?]+$/g, "").trim();
-    const right = m[2].trim().replace(/[.!?]+$/g, "").trim();
-    if (left && right && !/^(тема|уровень|возраст|время|класс|предмет|topic|level)$/i.test(left)) {
-      pairs.push([left, right]);
-    }
+  // Берём только явно записанные конструкции "левая часть = правая часть".
+  // Границы пары: начало строки/предложения, запятая, ; или новая строка.
+  const pairRegex =
+    /(?:^|[\n,;.]\s*)([^=,\n;.]{1,80}?)\s*=\s*([^=,\n;.]{1,80}?)(?=\s*(?:[,;\n.]|$))/g;
+
+  let match;
+  while ((match = pairRegex.exec(text)) !== null) {
+    const left = match[1]
+      .trim()
+      .replace(/^[.!?:\-–—\s]+|[.!?:\-–—\s]+$/g, "")
+      .trim();
+
+    const right = match[2]
+      .trim()
+      .replace(/^[.!?:\-–—\s]+|[.!?:\-–—\s]+$/g, "")
+      .trim();
+
+    if (!left || !right) continue;
+
+    const serviceText =
+      /^(тема|thema|topic|уровень|level|возраст|класс|предмет|сделай|создай|make|create)$/i;
+
+    if (serviceText.test(left) || serviceText.test(right)) continue;
+
+    pairs.push([left, right]);
   }
+
   return pairs.slice(0, 24);
 }
 
