@@ -3,6 +3,33 @@
   if (tg) { tg.ready(); tg.expand(); }
 
   const p = new URLSearchParams(location.search);
+  const gameLang = ["ru","de","en"].includes((p.get("lang") || "").toLowerCase())
+    ? (p.get("lang") || "").toLowerCase()
+    : "ru";
+
+  const finishI18n = {
+    ru: {
+      title: "Игра окончена!",
+      praise: "Ты молодец! Отличная работа!",
+      score: score => `Результат: ${score} очков.`,
+      again: "Играть ещё раз",
+      task: "Игра завершена."
+    },
+    de: {
+      title: "Das Spiel ist beendet!",
+      praise: "Super gemacht! Tolle Arbeit!",
+      score: score => `Ergebnis: ${score} Punkte.`,
+      again: "Noch einmal spielen",
+      task: "Das Spiel ist beendet."
+    },
+    en: {
+      title: "Game over!",
+      praise: "Great job! Well done!",
+      score: score => `Score: ${score} points.`,
+      again: "Play again",
+      task: "The game is finished."
+    }
+  };
   const family = p.get("family") || "memory";
   const topic = p.get("topic") || "Учебная тема";
   const level = p.get("level") || "—";
@@ -49,8 +76,24 @@
   function bad(msg){feedback.className="feedback bad";feedback.textContent=msg}
   function neutral(msg){feedback.className="feedback";feedback.textContent=msg}
   function finish(msg){
-    $("finishText").textContent=msg;
-    $("finish").classList.remove("hidden");
+    const t = finishI18n[gameLang] || finishI18n.ru;
+
+    $("finishTitle").textContent = t.title;
+    $("finishPraise").textContent = t.praise;
+    $("finishText").textContent = t.score(state.score);
+    $("playAgain").textContent = t.again;
+
+    task.innerHTML = `<strong>${t.task}</strong>`;
+    neutral(t.praise);
+
+    const finishBox = $("finish");
+    finishBox.classList.remove("hidden");
+
+    // Делает окончание визуально однозначным: финальный блок сразу оказывается в поле зрения.
+    requestAnimationFrame(() => {
+      finishBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
     tg?.HapticFeedback?.notificationOccurred("success");
   }
   function choiceGrid(options,onPick){

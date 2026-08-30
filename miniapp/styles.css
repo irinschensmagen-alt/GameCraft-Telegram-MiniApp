@@ -15,7 +15,10 @@ h1{font-size:clamp(26px,4vw,42px);margin:12px 0 6px}
 .hud>div{background:white;border:1px solid #ddd4ff;border-radius:18px;padding:12px;text-align:center}
 .hud small{display:block;color:#7a6f91}
 .hud strong{font-size:22px}
-.task,.feedback,.game-area,.finish{background:white;border:1px solid #ddd4ff;border-radius:20px;padding:16px;margin:12px 0}
+.task,.feedback,.game-area,.finish{background:white;border:2px solid #8f7cff;border-radius:22px;padding:20px;margin:16px 0;text-align:center;box-shadow:0 12px 34px rgba(82,63,190,.14)}
+.finish h2{margin:0 0 8px;font-size:clamp(24px,5vw,34px)}
+#finishPraise{font-size:clamp(18px,4vw,24px);font-weight:800;margin:8px 0}
+#finishText{font-size:17px;margin:8px 0 14px}
 .game-area{min-height:310px}
 .feedback.good{border-color:#6fd3a2;background:#f0fff7}
 .feedback.bad{border-color:#ff9c9c;background:#fff4f4}

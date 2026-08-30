@@ -1,0 +1,8 @@
+{
+  "german_finish_title": "Das Spiel ist beendet!",
+  "changed_files": [
+    "app.js",
+    "miniapp/app.js"
+  ],
+  "syntax_ok": true
+}
